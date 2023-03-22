@@ -187,10 +187,10 @@ function SignUpPage() {
                 >
                 Sign up with Google
                 </Button>
-                <p>
+                <p style={{ color: '#888888' }}>
                 Already have an account?{' '}
-                <a href="#" style={{ color: '#3f51b5' }}>
-                    Log in now
+                <a href="#" style={{ color: '#000', fontWeight: 'bold' , textDecoration: 'none' }}>
+                    Log in Now
                 </a>
                 </p>
             </form>
