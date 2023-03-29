@@ -36,7 +36,7 @@ const MyModal = ({ open, handleClose, title, description }) => {
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Box sx={{ padding: 3 }}>
+          <Box sx={{ padding: 1 }}>
             <img src={Image} alt="modal" sx={{ height: 200, mb: 1 }} />
           </Box>  
           <Typography variant="h5" sx={{ mb: 1 }}>

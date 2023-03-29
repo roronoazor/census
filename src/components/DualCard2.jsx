@@ -161,15 +161,17 @@ const DualCard2 = (props) => {
             <Grid container spacing={6} sx={{ alignItems: 'center', padding: '20px' }}>
                 {
                     contents.map((content, index) => {
-                        return <RenderRow {...content} />
+                        return <RenderRow key={index} {...content} />
                     })
                 }
             </Grid>
             <Grid item xs={12}> 
-                <Box sx={{ width: '100%', padding: '15px' }}>
-                    <Typography align="left" variant="h3" component="h4" align="center" sx={{ marginBottom: '5%' }}>Contribute to This Change</Typography>
+                <Box sx={{ width: '100%', padding: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant="h3" component="h4" align="center" sx={{ marginBottom: '5%' }}>Contribute to This Change</Typography>
                     <br />
-                    <ArrowButton />  
+                    <Box sx={{ width: '100%', textAlign: 'center' }}>
+                        <ArrowButton />  
+                    </Box>
                     <br /><br />
                 </Box>
             </Grid>

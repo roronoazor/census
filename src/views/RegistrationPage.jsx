@@ -18,19 +18,20 @@ import CallOutlinedIcon from '@mui/icons-material/CallOutlined';
 import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOutlined';
 import { primaryColor } from '../config/constants';
 import FeedbackModal from './FeedbackModal';
+import { nigeriaLgas } from '../config/states';
 
 const RegistrationPage = (props) => {
 
-    const NigeriaStates = [
-        {
-          name: 'Abia',
-          lgas: ['Aba North', 'Aba South', 'Arochukwu', 'Bende', 'Ikwuano', 'Isiala Ngwa North', 'Isiala Ngwa South', 'Isuikwuato', 'Obi Ngwa', 'Ohafia', 'Osisioma Ngwa', 'Ugwunagbo', 'Ukwa East', 'Ukwa West', 'Umuahia North', 'Umuahia South', 'Umu Nneochi'],
-        },
-        {
-          name: 'Adamawa',
-          lgas: ['Demsa', 'Fufure', 'Ganye', 'Gayuk', 'Girei', 'Gombi', 'Guyuk', 'Hong', 'Jada', 'Lamurde', 'Madagali', 'Maiha', 'Mayo Belwa', 'Michika', 'Mubi North', 'Mubi South', 'Numan', 'Shelleng', 'Song', 'Toungo', 'Yola North', 'Yola South'],
-        }
-    ]
+    // const NigeriaStates = [
+    //     {
+    //       name: 'Abia',
+    //       lgas: ['Aba North', 'Aba South', 'Arochukwu', 'Bende', 'Ikwuano', 'Isiala Ngwa North', 'Isiala Ngwa South', 'Isuikwuato', 'Obi Ngwa', 'Ohafia', 'Osisioma Ngwa', 'Ugwunagbo', 'Ukwa East', 'Ukwa West', 'Umuahia North', 'Umuahia South', 'Umu Nneochi'],
+    //     },
+    //     {
+    //       name: 'Adamawa',
+    //       lgas: ['Demsa', 'Fufure', 'Ganye', 'Gayuk', 'Girei', 'Gombi', 'Guyuk', 'Hong', 'Jada', 'Lamurde', 'Madagali', 'Maiha', 'Mayo Belwa', 'Michika', 'Mubi North', 'Mubi South', 'Numan', 'Shelleng', 'Song', 'Toungo', 'Yola North', 'Yola South'],
+    //     }
+    // ]
 
     const [selectedState, setSelectedState] = useState('');
     const [filteredLgas, setFilteredLgas] = useState([]);
@@ -38,19 +39,16 @@ const RegistrationPage = (props) => {
   
     const handleStateChange = (event) => {
       setSelectedState(event.target.value);
-      const selectedStateObj = NigeriaStates.find((state) => state.name === event.target.value);
-      setFilteredLgas(selectedStateObj ? selectedStateObj.lgas : []);
+      setFilteredLgas(nigeriaLgas[event.target.value]);
     };
+    console.log('xx -> ', selectedState)
 
     return (
         <Box sx={{ paddingX: '10%' }}>
-            <FeedbackModal
+            {/* <FeedbackModal
                 open={modalOpen}
                 handleClose={() => setModalOpen(false)}
-                image="https://via.placeholder.com/500x300"
-                title="Modal Title"
-                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec faucibus massa. Fusce at leo lobortis, laoreet ante sed, faucibus enim. Donec nec tortor ac turpis tincidunt tristique. "
-            />
+            /> */}
             <Box
                 display="flex" 
             >
@@ -257,8 +255,8 @@ const RegistrationPage = (props) => {
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
                             <MenuItem value="">--Select--</MenuItem>
-                            {NigeriaStates.map((state) => (
-                                <MenuItem key={state.name} value={state.name}>{state.name}</MenuItem>
+                            {(Object.keys(nigeriaLgas)).map((state, index) => (
+                                <MenuItem key={index} value={state}>{state}</MenuItem>
                             ))}
                             </Select>
                         </Grid>
@@ -272,8 +270,8 @@ const RegistrationPage = (props) => {
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
                             <MenuItem value="">--Select--</MenuItem>
-                            {filteredLgas.map((lga) => (
-                                <MenuItem key={lga} value={lga}>{lga}</MenuItem>
+                            {filteredLgas.map((lga, index) => (
+                                <MenuItem key={index} value={lga}>{lga}</MenuItem>
                             ))}
                             </Select>
                         </Grid>
@@ -300,8 +298,8 @@ const RegistrationPage = (props) => {
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
                             <MenuItem value="">--Select--</MenuItem>
-                            {NigeriaStates.map((state) => (
-                                <MenuItem key={state.name} value={state.name}>{state.name}</MenuItem>
+                            {(Object.keys(nigeriaLgas)).map((state, index) => (
+                                <MenuItem key={index} value={state}>{state}</MenuItem>
                             ))}
                             </Select>
                         </Grid>
@@ -315,8 +313,8 @@ const RegistrationPage = (props) => {
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
                             <MenuItem value="">--Select--</MenuItem>
-                            {filteredLgas.map((lga) => (
-                                <MenuItem key={lga} value={lga}>{lga}</MenuItem>
+                            {filteredLgas.map((lga, index) => (
+                                <MenuItem key={index} value={lga}>{lga}</MenuItem>
                             ))}
                             </Select>
                         </Grid>
