@@ -10,9 +10,11 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
+import { useNavigate } from 'react-router';
 
 const Header = (props) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const navigate = useNavigate();
   
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
@@ -21,6 +23,14 @@ const Header = (props) => {
     const handleClose = () => {
       setAnchorEl(null);
     };
+
+    const moveToLoginPage = () => {
+      navigate('/auth/login');
+    }
+
+    const moveToSignupPage = () => {
+      navigate('/auth/signup');
+    }
   
     return (
       <Box sx={{ borderBottom: '1px solid #D1D1D1' }}>
@@ -38,6 +48,7 @@ const Header = (props) => {
             <Stack direction="row" spacing={2}>
               <Button
                 variant="outlined"
+                onClick={moveToLoginPage}
                 sx={{
                   height: '40px',
                   width: '230px',
@@ -47,10 +58,11 @@ const Header = (props) => {
                   display: { xs: 'none', md: 'block' }, // hide on mobile devices
                 }}
               >
-                Create Account
+                Log in
               </Button>
               <Button
                 variant="contained"
+                onClick={moveToSignupPage}
                 sx={{
                   height: '40px',
                   width: '230px',
@@ -60,7 +72,7 @@ const Header = (props) => {
                   display: { xs: 'none', md: 'block' }, // hide on mobile devices
                 }}
               >
-                Register Now
+                Sign Up
               </Button>
               {/* Hamburger menu for mobile devices */}
               <IconButton
@@ -78,8 +90,8 @@ const Header = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Create Account</MenuItem>
-                <MenuItem onClick={handleClose}>Register Now</MenuItem>
+                <MenuItem onClick={moveToLoginPage}>Log in</MenuItem>
+                <MenuItem onClick={moveToSignupPage}>Sign up</MenuItem>
               </Menu>
             </Stack>
           </Box>

@@ -10,11 +10,22 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import ImageOverlap from './ImageOverlap';
 import Image1 from '../assets/Image1.png';
 import Image2 from '../assets/Image2.png';
+import { useNavigate } from 'react-router';
 
 
 const DualCard = (props) => {
 
     const notMobile = useMediaQuery('(min-width:600px)');
+    const navigate = useNavigate();
+
+    const moveToLoginPage = () => {
+        navigate('/auth/login');
+      }
+  
+      const moveToSignupPage = () => {
+        navigate('/auth/signup');
+      }
+    
 
     return (
         <Container>
@@ -29,11 +40,11 @@ const DualCard = (props) => {
                             and amenity distribution.
                         </Typography>
                         <Stack direction={ notMobile ? "row" : "column" } spacing={2}>.
-                            <Button variant="outlined" sx={{ height: '40px', width: '100%' ,  color: primaryColor, borderColor: primaryColor, textTransform: 'none' }}>
-                                Create Account
+                            <Button onClick={moveToLoginPage} variant="outlined" sx={{ height: '40px', width: '100%' ,  color: primaryColor, borderColor: primaryColor, textTransform: 'none' }}>
+                                Log in
                             </Button>
-                            <Button variant="contained" sx={{ height: '40px', width: '100%' , color: '#fff', backgroundColor: primaryColor, textTransform: 'none' }}>
-                                Register Now
+                            <Button onClick={moveToSignupPage} variant="contained" sx={{ height: '40px', width: '100%' , color: '#fff', backgroundColor: primaryColor, textTransform: 'none' }}>
+                                Sign up
                             </Button>
                         </Stack>
                     </Box>
