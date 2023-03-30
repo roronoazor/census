@@ -22,31 +22,40 @@ import { nigeriaLgas } from '../config/states';
 
 const RegistrationPage = (props) => {
 
-    // const NigeriaStates = [
-    //     {
-    //       name: 'Abia',
-    //       lgas: ['Aba North', 'Aba South', 'Arochukwu', 'Bende', 'Ikwuano', 'Isiala Ngwa North', 'Isiala Ngwa South', 'Isuikwuato', 'Obi Ngwa', 'Ohafia', 'Osisioma Ngwa', 'Ugwunagbo', 'Ukwa East', 'Ukwa West', 'Umuahia North', 'Umuahia South', 'Umu Nneochi'],
-    //     },
-    //     {
-    //       name: 'Adamawa',
-    //       lgas: ['Demsa', 'Fufure', 'Ganye', 'Gayuk', 'Girei', 'Gombi', 'Guyuk', 'Hong', 'Jada', 'Lamurde', 'Madagali', 'Maiha', 'Mayo Belwa', 'Michika', 'Mubi North', 'Mubi South', 'Numan', 'Shelleng', 'Song', 'Toungo', 'Yola North', 'Yola South'],
-    //     }
-    // ]
-    const [selectedState, setSelectedState] = useState('');
+    const [formData, setFormData] = useState({});
     const [filteredLgas, setFilteredLgas] = useState([]);
-    const [modalOpen, setModalOpen] = useState(true);
+    const [filteredResidenceLgas, setFilteredResidenceLgas] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
   
-    const handleStateChange = (event) => {
-      setSelectedState(event.target.value);
-      setFilteredLgas(nigeriaLgas[event.target.value]);
-    };
+
+    const handleChange = (e) => {   
+        
+        const { name, value } = e.target;
+
+        setFormData((prevFormData) => ({
+        ...prevFormData,
+        [e.target.name]: e.target.value,
+        }));
+
+        if (name == 'state_of_residence') {
+            setFilteredResidenceLgas(nigeriaLgas[value]);
+            return;
+        }
+
+        if (name == 'state_of_origin') {
+            setFilteredLgas(nigeriaLgas[value]);
+            return;
+        }
+    }
+
+    console.log('ff: ', formData);
 
     return (
         <Box sx={{ paddingX: '10%' }}>
-            {/* <FeedbackModal
+            <FeedbackModal
                 open={modalOpen}
                 handleClose={() => setModalOpen(false)}
-            /> */}
+            />
             <Box
                 display="flex" 
             >
@@ -71,6 +80,9 @@ const RegistrationPage = (props) => {
                                 sx={{ width: '100%' }}
                                 id="first-name-input"
                                 variant="outlined"
+                                name="first_name"
+                                onChange={handleChange}
+                                value={formData?.first_name}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -79,6 +91,9 @@ const RegistrationPage = (props) => {
                                 sx={{ width: '100%' }}
                                 id="middle-name-input"
                                 variant="outlined"
+                                name="middle_name"
+                                onChange={handleChange}
+                                value={formData?.middle_name}
                             />
                         </Grid>
                         <Grid item xs={12} sm={4}>
@@ -87,6 +102,9 @@ const RegistrationPage = (props) => {
                                 sx={{ width: '100%' }}
                                 id="last-name-input"
                                 variant="outlined"
+                                name="last_name"
+                                onChange={handleChange}
+                                value={formData?.last_name}
                             />
                         </Grid>
                     </Grid>
@@ -108,6 +126,9 @@ const RegistrationPage = (props) => {
                                 id="date-of-birth"
                                 variant="outlined"
                                 type="date"
+                                name="date_of_birth"
+                                onChange={handleChange}
+                                value={formData?.date_of_birth}
                             />
                         </Grid>
                     </Grid>
@@ -126,9 +147,9 @@ const RegistrationPage = (props) => {
                             <RadioGroup
                                 row
                                 aria-label="marital-status"
-                                name="marital-status"
-                                // value={value}
-                                // onChange={handleChange}
+                                name="marital_status"
+                                value={formData?.marital_status}
+                                onChange={handleChange}
                                 >
                                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                                 <FormControlLabel
@@ -194,6 +215,9 @@ const RegistrationPage = (props) => {
                                       </InputAdornment>
                                     ),
                                   }}
+                                name="phone_number"
+                                value={formData.phone_number}
+                                onChange={handleChange}
                             />
                         </Grid>
                         <Grid item xs={12} sm={8}>
@@ -202,6 +226,9 @@ const RegistrationPage = (props) => {
                                 sx={{ width: '100%' }}
                                 id="house-address-input"
                                 variant="outlined"
+                                name="house_address"
+                                value={formData.house_address}
+                                onChange={handleChange}
                             />
                         </Grid>
                     </Grid>    
@@ -218,8 +245,9 @@ const RegistrationPage = (props) => {
                             <Select
                                 labelId="residential-building-select-label"
                                 id="residential-building-select"
-                                // value={buildingType}
-                                // onChange={handleChange}
+                                value={formData?.residential_building}
+                                onChange={handleChange}
+                                name="residential_building"
                                 IconComponent={ExpandCircleDownOutlinedIcon}
                                 sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -247,8 +275,9 @@ const RegistrationPage = (props) => {
                             <Select
                             labelId="state-select-label"
                             id="state-select"
-                            value={selectedState}
-                            onChange={handleStateChange}
+                            value={formData?.state_of_residence}
+                            onChange={handleChange}
+                            name="state_of_residence"
                             IconComponent={ExpandCircleDownOutlinedIcon}
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -263,12 +292,13 @@ const RegistrationPage = (props) => {
                             <Select
                             labelId="lga-select-label"
                             id="lga-select"
-                            value=""
                             IconComponent={ExpandCircleDownOutlinedIcon}
+                            name="lga_of_residence"
+                            value={formData?.lga_of_residence}
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
                             <MenuItem value="">--Select--</MenuItem>
-                            {filteredLgas.map((lga, index) => (
+                            {filteredResidenceLgas.map((lga, index) => (
                                 <MenuItem key={index} value={lga}>{lga}</MenuItem>
                             ))}
                             </Select>
@@ -290,8 +320,9 @@ const RegistrationPage = (props) => {
                             <Select
                             labelId="state-select-label"
                             id="state-select"
-                            value={selectedState}
-                            onChange={handleStateChange}
+                            value={formData?.state_of_origin}
+                            onChange={handleChange}
+                            name="state_of_origin"
                             IconComponent={ExpandCircleDownOutlinedIcon}
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -306,7 +337,8 @@ const RegistrationPage = (props) => {
                             <Select
                             labelId="lga-select-label"
                             id="lga-select"
-                            value=""
+                            value={formData?.lga_of_origin}
+                            name="lga_of_origin"
                             IconComponent={ExpandCircleDownOutlinedIcon}
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -334,6 +366,9 @@ const RegistrationPage = (props) => {
                                 sx={{ width: '100%' }}
                                 id="occupation-input"
                                 variant="outlined"
+                                name="occupation"
+                                onChange={handleChange}
+                                value={formData?.occupation}
                             />
                         </Grid>
                         <Grid item xs={12} sm={8}>
@@ -342,6 +377,9 @@ const RegistrationPage = (props) => {
                                 sx={{ width: '100%' }}
                                 id="place-of-work-input"
                                 variant="outlined"
+                                name="place_of_work"
+                                onChange={handleChange}
+                                value={formData?.place_of_work}
                             />
                         </Grid>
                     </Grid>
@@ -361,8 +399,9 @@ const RegistrationPage = (props) => {
                             <Select
                                 labelId="education-select-label"
                                 id="education-select"
-                                // value={buildingType}
-                                // onChange={handleChange}
+                                value={formData?.level_of_education}
+                                name="level_of_education"
+                                onChange={handleChange}
                                 IconComponent={ExpandCircleDownOutlinedIcon}
                                 sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -389,8 +428,9 @@ const RegistrationPage = (props) => {
                             <Select
                                 labelId="family-input-label"
                                 id="family-input"
-                                // value={buildingType}
-                                // onChange={handleChange}
+                                name="type_of_family"
+                                value={formData?.type_of_family}
+                                onChange={handleChange}
                                 IconComponent={ExpandCircleDownOutlinedIcon}
                                 sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >

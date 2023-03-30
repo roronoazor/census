@@ -33,6 +33,11 @@ const Header = (props) => {
       navigate('/auth/signup');
     }
 
+    const logout = () => {
+      localStorage.clear();
+      window.location.reload();
+    }
+
     const moveToRegistrationPage = () => {
       navigate('/account/register');
     }
@@ -70,6 +75,20 @@ const Header = (props) => {
                     >
                       Register
                     </Button>
+                    <Button
+                    variant="contained"
+                    onClick={logout}
+                    sx={{
+                      height: '40px',
+                      width: '230px',
+                      color: '#fff',
+                      backgroundColor: primaryColor,
+                      textTransform: 'none',
+                      display: { xs: 'none', md: 'block' }, // hide on mobile devices
+                    }}
+                  >
+                    Log out
+                  </Button>
                   </>
                 ) :
                 (
@@ -124,14 +143,16 @@ const Header = (props) => {
               >
                 {
                   data?.token ? (
-                    <>
+                    <Box>
                       <MenuItem onClick={moveToRegistrationPage}>Register</MenuItem>
-                    </>
+                      <MenuItem onClick={logout}>Log out</MenuItem>
+                    </Box>
+                    
                   ) : (
-                    <>
+                    <Box>
                       <MenuItem onClick={moveToLoginPage}>Log in</MenuItem>
                       <MenuItem onClick={moveToSignupPage}>Sign up</MenuItem>    
-                    </>
+                    </Box>
                   )
                 }
                 

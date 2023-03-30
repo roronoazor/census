@@ -13,6 +13,7 @@ import { API_URL } from '../config/constants';
 import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 const styles = {
     container: {
@@ -89,17 +90,20 @@ function SignUpPage() {
     };
 
   const [formData, setFormData] = React.useState({ email: '', password: '', confirm_password: '' });
-  const { mutate } = useMutation(signUp, {
+  const { mutate, isLoading } = useMutation(signUp, {
     onSuccess: (data) => {
       localStorage.setItem('data', JSON.stringify(data));
-      console.log('data: ', data);
       // add any other necessary data to state here
+      window.location.reload();
       navigate('/'); // replace this with the URL to redirect the user to after signup
     },
+    onError: (error) => {
+      setMessage(error?.response?.data?.detail || 'Oops! Something went wrong');
+      setOpenSnack(true);
+    }
   });
 
   const handleChange = (e) => {
-    console.log('handleChange')
     setFormData((prevFormData) => ({
       ...prevFormData,
       [e.target.name]: e.target.value,
@@ -232,9 +236,10 @@ function SignUpPage() {
                   }}
                 />
                 </Box>
-                <Button
+                <LoadingButton
                 variant="contained"
                 onClick={handleSubmit}
+                loading={isLoading}
                 fullWidth
                 sx={{ 
                     marginBottom: 2,
@@ -246,7 +251,7 @@ function SignUpPage() {
                 }}
                 >
                 Create Account
-                </Button>
+                </LoadingButton>
                 <Divider> or </Divider>
                 <Button
                 variant="contained"

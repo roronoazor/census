@@ -7,10 +7,15 @@ import GoogleIcon from '@mui/icons-material/Google';
 import rippleTop from '../assets/rippleTop.png';
 import rippleBottom from '../assets/rippleBottom.png';
 import Divider from '@mui/material/Divider';
-
+import LoadingButton from '@mui/lab/LoadingButton';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { useNavigate } from 'react-router';
+import { useMutation } from 'react-query';
+import { API_URL } from '../config/constants';
+import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const styles = {
     container: {
@@ -67,9 +72,70 @@ const styles = {
 function LoginPage() {
 
   const navigate = useNavigate();
+  const [openSnack, setOpenSnack] = React.useState(false);  
+  const [message, setMessage] = React.useState('');
   const moveToSignupPage = () => {
     navigate('/auth/signup');
   }
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+    setMessage('');
+  }
+
+  const logIn = async ({ email, password }) => {
+      const { data } = await axios.post(`${API_URL}/authentication/login/`, {
+        email,
+        password,
+      });
+      return data;
+  };
+
+  const [formData, setFormData] = React.useState({ email: '', password: '', rememberMe: false });
+  const { mutate, isLoading } = useMutation(logIn, {
+    onSuccess: (data) => {
+      localStorage.setItem('data', JSON.stringify(data));
+      // add any other necessary data to state here
+      window.location.reload();
+      navigate('/'); // replace this with the URL to redirect the user to after signup
+    },
+    onError: (error) => {
+      setMessage(error?.response?.data?.detail || 'Oops! Something went wrong');
+      setOpenSnack(true);
+    }
+  });
+
+  const handleChange = (e) => {
+    
+    const { name, value } = e.target;
+    
+    if (name == 'rememberMe') {
+       setFormData((prevFormData) => ({
+        ...prevFormData,
+        [e.target.name]: e.target.checked,
+      }));
+      return;
+    }
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if ((!formData.password || !formData.email)){
+      setOpenSnack(true);
+      setMessage('Please fill all required fields!!!')
+      return;
+    }
+    
+    mutate(formData);
+  };
+
+  console.log('formData', formData);
   
   return (
     <Box 
@@ -77,6 +143,11 @@ function LoginPage() {
     >
         <img src={rippleTop} alt="background image 1" style={styles.backgroundImage1} />
         <img src={rippleBottom} alt="background image 2" style={styles.backgroundImage2} />
+        <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+          <Alert onClose={handleCloseSnack} severity="warning" sx={{ width: '100%' }}>
+            {message || ''}
+          </Alert>
+        </Snackbar>
         <Grid container justifyContent="center"  >
         <Grid item xs={12} sm={8} md={6}>
             <Paper
@@ -109,7 +180,9 @@ function LoginPage() {
                     </label>
                     <TextField
                     id="email"
+                    name="email"
                     variant="outlined"
+                    onChange={handleChange}
                     InputProps={{
                         startAdornment: <MailOutlineIcon color="action" fontSize="small" />,
                     }}
@@ -128,6 +201,8 @@ function LoginPage() {
                 </label>
                 <TextField
                   id="password"
+                  name="password"
+                  onChange={handleChange}
                   variant="outlined"
                   type="password"
                   InputProps={{
@@ -146,18 +221,19 @@ function LoginPage() {
                 style={{ float: "left", marginRight: "10px" }}
                 control={
                     <Checkbox
-                    // checked={rememberMe}
-                    // onChange={handleCheckboxChange}
-                    checked={true}
+                    onChange={handleChange}
+                    checked={formData?.rememberMe}
                     name="rememberMe"
                     color="primary"
                     />
                 }
                 label="Remember Me"
                 />
-                <Button
+                <LoadingButton
                 variant="contained"
+                loading={isLoading}
                 fullWidth
+                onClick={handleSubmit}
                 sx={{ 
                     marginBottom: 2,
                     backgroundColor: primaryColor,
@@ -168,7 +244,7 @@ function LoginPage() {
                 }}
                 >
                 Log In
-                </Button>
+                </LoadingButton>
                 <Divider> or </Divider>
                 <Button
                 variant="contained"

@@ -16,7 +16,7 @@ function App() {
       const storedData = JSON.parse(localStorage.getItem('data'));
       setToken(storedData?.token);
   }, []);
-
+  console.log('token: ', token);
 
   return (
     <QueryClientProvider client={queryClient}>
