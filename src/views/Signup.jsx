@@ -7,6 +7,12 @@ import GoogleIcon from '@mui/icons-material/Google';
 import rippleTop from '../assets/rippleTop.png';
 import rippleBottom from '../assets/rippleBottom.png';
 import Divider from '@mui/material/Divider';
+import { useNavigate } from 'react-router';
+import { useMutation } from 'react-query';
+import { API_URL } from '../config/constants';
+import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 
 const styles = {
     container: {
@@ -62,12 +68,74 @@ const styles = {
 
 function SignUpPage() {
   
+  const navigate = useNavigate();
+  const [openSnack, setOpenSnack] = React.useState(false);  
+  const [message, setMessage] = React.useState('');
+  const moveToLoginPage = () => {
+    navigate('/auth/login');
+  }
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+    setMessage('');
+  }
+
+  const signUp = async ({ email, password }) => {
+      const { data } = await axios.post(`${API_URL}/authentication/signup/`, {
+        email,
+        password,
+      });
+      return data;
+    };
+
+  const [formData, setFormData] = React.useState({ email: '', password: '', confirm_password: '' });
+  const { mutate } = useMutation(signUp, {
+    onSuccess: (data) => {
+      localStorage.setItem('data', JSON.stringify(data));
+      console.log('data: ', data);
+      // add any other necessary data to state here
+      navigate('/'); // replace this with the URL to redirect the user to after signup
+    },
+  });
+
+  const handleChange = (e) => {
+    console.log('handleChange')
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if ((!formData.password || !formData.confirm_password || !formData.email)){
+      setOpenSnack(true);
+      setMessage('Please fill all required fields!!!')
+      return;
+    }
+
+    if (formData.password != formData.confirm_password){
+      setOpenSnack(true);
+      setMessage('Your passwords do not match!!!')
+      return;
+    }
+
+    mutate(formData);
+  };
+
+
   return (
     <Box 
     sx={styles.container}
     >
         <img src={rippleTop} alt="background image 1" style={styles.backgroundImage1} />
         <img src={rippleBottom} alt="background image 2" style={styles.backgroundImage2} />
+        <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+          <Alert onClose={handleCloseSnack} severity="warning" sx={{ width: '100%' }}>
+            {message || ''}
+          </Alert>
+        </Snackbar>
         <Grid container justifyContent="center"  >
         <Grid item xs={12} sm={8} md={6}>
             <Paper
@@ -100,11 +168,14 @@ function SignUpPage() {
                     </label>
                     <TextField
                     id="email"
+                    name="email"
                     variant="outlined"
                     InputProps={{
                         startAdornment: <MailOutlineIcon color="action" fontSize="small" />,
                     }}
                     fullWidth
+                    value={formData?.email}
+                    onChange={handleChange}
                     sx={{
                         marginBottom: 2,
                         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -121,6 +192,10 @@ function SignUpPage() {
                   id="password"
                   variant="outlined"
                   type="password"
+                  name="password"
+                  value={formData?.password}
+                  required
+                  onChange={handleChange}
                   InputProps={{
                     startAdornment: <LockOpenIcon color="action" fontSize="small" />,
                   }}
@@ -141,6 +216,10 @@ function SignUpPage() {
                   id="password"
                   variant="outlined"
                   type="password"
+                  name="confirm_password"
+                  onChange={handleChange}
+                  value={formData?.confirmPassword}
+                  required
                   InputProps={{
                     startAdornment: <LockOpenIcon color="action" fontSize="small" />,
                   }}
@@ -155,6 +234,7 @@ function SignUpPage() {
                 </Box>
                 <Button
                 variant="contained"
+                onClick={handleSubmit}
                 fullWidth
                 sx={{ 
                     marginBottom: 2,
@@ -189,9 +269,9 @@ function SignUpPage() {
                 </Button>
                 <p style={{ color: '#888888' }}>
                 Already have an account?{' '}
-                <a href="#" style={{ color: '#000', fontWeight: 'bold' , textDecoration: 'none' }}>
+                <Button sx={{ color: '#000', fontWeight: 'bold' , textDecoration: 'none', textTransform: 'none' }} onClick={moveToLoginPage}>
                     Log in Now
-                </a>
+                </Button>
                 </p>
             </form>
             </Paper>

@@ -1,15 +1,10 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import { primaryColor, secondaryColor } from '../config/constants';
 import { Container } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import ImageOverlap from './ImageOverlap';
-import Image1 from '../assets/Image1.png';
-import Image2 from '../assets/Image2.png';
 import ArrowButton from './ArrowButton';
 import economicPolicy from  '../assets/economicPolicy.png';
 import dataGuiding from '../assets/dataGuiding.png';
@@ -17,6 +12,7 @@ import revenueEstimation from '../assets/revenueEstimation.png';
 import provisionSocialAmenities from '../assets/provisionSocialAmenities.png';
 import determinationPopulation from '../assets/determinationPopulation.png';
 import backgroundRec from '../assets/backgroundRec.png';
+import { useNavigate } from 'react-router';
 
 const contents = [
     {
@@ -149,7 +145,16 @@ const RenderRow = (props) => {
 
 const DualCard2 = (props) => {
 
+    const { authenticated, data } = props;
+    const navigate = useNavigate();
     const notMobile = useMediaQuery('(min-width:600px)');
+    const moveToSignupPage = () => {
+        navigate('/auth/signup');
+      }
+
+    const moveToRegistrationPage = () => {
+        navigate('/account/register');
+    }
 
     return (
         <Container sx={{ marginTop: (notMobile ? '5%' : '10%') }}>
@@ -170,7 +175,12 @@ const DualCard2 = (props) => {
                     <Typography variant="h3" component="h4" align="center" sx={{ marginBottom: '5%' }}>Contribute to This Change</Typography>
                     <br />
                     <Box sx={{ width: '100%', textAlign: 'center' }}>
-                        <ArrowButton />  
+                        <ArrowButton 
+                            moveToSignupPage={moveToSignupPage} 
+                            moveToRegistrationPage={moveToRegistrationPage}    
+                            authenticated={authenticated}
+                            data={data}
+                        />  
                     </Box>
                     <br /><br />
                 </Box>

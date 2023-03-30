@@ -33,7 +33,7 @@ const CustomButton = styled(Button)({
   },
 });
 
-function ArrowButton() {
+function ArrowButton({ moveToSignupPage, moveToRegistrationPage, data, authenticated }) {
   const sx = {
     root: {
       display: 'flex',
@@ -66,8 +66,8 @@ function ArrowButton() {
   return (
     <div sx={sx.root}>
       <Arrow sx={sx.arrow} src={ArrowLeftIcon} alt="left arrow" />
-      <CustomButton variant="contained" color="primary" sx={sx.button}>
-        Register Yourself Now
+      <CustomButton variant="contained" color="primary" sx={sx.button} onClick={data?.token ? moveToRegistrationPage : moveToSignupPage}>
+        { data?.token ? 'Register Yourself Now' : 'Register' }
       </CustomButton>
       <Arrow sx={sx.arrow} src={ArrowRightIcon} alt="right arrow" />
     </div>

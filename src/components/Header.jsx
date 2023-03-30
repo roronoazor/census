@@ -13,6 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import { useNavigate } from 'react-router';
 
 const Header = (props) => {
+    const { authenticated, data } = props;
     const [anchorEl, setAnchorEl] = useState(null);
     const navigate = useNavigate();
   
@@ -31,6 +32,10 @@ const Header = (props) => {
     const moveToSignupPage = () => {
       navigate('/auth/signup');
     }
+
+    const moveToRegistrationPage = () => {
+      navigate('/account/register');
+    }
   
     return (
       <Box sx={{ borderBottom: '1px solid #D1D1D1' }}>
@@ -46,34 +51,61 @@ const Header = (props) => {
               Counter
             </Typography>
             <Stack direction="row" spacing={2}>
-              <Button
-                variant="outlined"
-                onClick={moveToLoginPage}
-                sx={{
-                  height: '40px',
-                  width: '230px',
-                  color: primaryColor,
-                  borderColor: primaryColor,
-                  textTransform: 'none',
-                  display: { xs: 'none', md: 'block' }, // hide on mobile devices
-                }}
-              >
-                Log in
-              </Button>
-              <Button
-                variant="contained"
-                onClick={moveToSignupPage}
-                sx={{
-                  height: '40px',
-                  width: '230px',
-                  color: '#fff',
-                  backgroundColor: primaryColor,
-                  textTransform: 'none',
-                  display: { xs: 'none', md: 'block' }, // hide on mobile devices
-                }}
-              >
-                Sign Up
-              </Button>
+
+              {
+                data?.token ? 
+                (
+                  <>
+                    <Button
+                      variant="outlined"
+                      onClick={moveToRegistrationPage}
+                      sx={{
+                        height: '40px',
+                        width: '230px',
+                        color: primaryColor,
+                        borderColor: primaryColor,
+                        textTransform: 'none',
+                        display: { xs: 'none', md: 'block' }, // hide on mobile devices
+                      }}
+                    >
+                      Register
+                    </Button>
+                  </>
+                ) :
+                (
+                  <>
+                  <Button
+                    variant="outlined"
+                    onClick={moveToLoginPage}
+                    sx={{
+                      height: '40px',
+                      width: '230px',
+                      color: primaryColor,
+                      borderColor: primaryColor,
+                      textTransform: 'none',
+                      display: { xs: 'none', md: 'block' }, // hide on mobile devices
+                    }}
+                  >
+                    Log in
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={moveToSignupPage}
+                    sx={{
+                      height: '40px',
+                      width: '230px',
+                      color: '#fff',
+                      backgroundColor: primaryColor,
+                      textTransform: 'none',
+                      display: { xs: 'none', md: 'block' }, // hide on mobile devices
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                  </>
+                )
+              }
+             
               {/* Hamburger menu for mobile devices */}
               <IconButton
                 size="large"
@@ -90,8 +122,19 @@ const Header = (props) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={moveToLoginPage}>Log in</MenuItem>
-                <MenuItem onClick={moveToSignupPage}>Sign up</MenuItem>
+                {
+                  data?.token ? (
+                    <>
+                      <MenuItem onClick={moveToRegistrationPage}>Register</MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem onClick={moveToLoginPage}>Log in</MenuItem>
+                      <MenuItem onClick={moveToSignupPage}>Sign up</MenuItem>    
+                    </>
+                  )
+                }
+                
               </Menu>
             </Stack>
           </Box>

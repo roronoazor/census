@@ -32,7 +32,6 @@ const RegistrationPage = (props) => {
     //       lgas: ['Demsa', 'Fufure', 'Ganye', 'Gayuk', 'Girei', 'Gombi', 'Guyuk', 'Hong', 'Jada', 'Lamurde', 'Madagali', 'Maiha', 'Mayo Belwa', 'Michika', 'Mubi North', 'Mubi South', 'Numan', 'Shelleng', 'Song', 'Toungo', 'Yola North', 'Yola South'],
     //     }
     // ]
-
     const [selectedState, setSelectedState] = useState('');
     const [filteredLgas, setFilteredLgas] = useState([]);
     const [modalOpen, setModalOpen] = useState(true);
@@ -41,7 +40,6 @@ const RegistrationPage = (props) => {
       setSelectedState(event.target.value);
       setFilteredLgas(nigeriaLgas[event.target.value]);
     };
-    console.log('xx -> ', selectedState)
 
     return (
         <Box sx={{ paddingX: '10%' }}>

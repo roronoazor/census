@@ -10,6 +10,7 @@ import Divider from '@mui/material/Divider';
 
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useNavigate } from 'react-router';
 
 const styles = {
     container: {
@@ -64,6 +65,11 @@ const styles = {
   };
 
 function LoginPage() {
+
+  const navigate = useNavigate();
+  const moveToSignupPage = () => {
+    navigate('/auth/signup');
+  }
   
   return (
     <Box 
@@ -185,9 +191,9 @@ function LoginPage() {
                 </Button>
                 <p style={{ color: '#888888' }}>
                 Already have an account?{' '}
-                <a href="#" style={{ color: '#000', fontWeight: 'bold' , textDecoration: 'none' }}>
+                <Button sx={{ color: '#000', fontWeight: 'bold' , textDecoration: 'none', textTransform: 'none' }} onClick={moveToSignupPage}>
                     Register Account
-                </a>
+                </Button>
                 </p>
             </form>
             </Paper>
