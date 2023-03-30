@@ -19,6 +19,14 @@ import ExpandCircleDownOutlinedIcon from '@mui/icons-material/ExpandCircleDownOu
 import { primaryColor } from '../config/constants';
 import FeedbackModal from './FeedbackModal';
 import { nigeriaLgas } from '../config/states';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import axios from 'axios';
+import { API_URL } from '../config/constants';
+import { useMutation, useQuery } from 'react-query';
+import { useNavigate } from 'react-router';
+import { LoadingButton } from '@mui/lab';
+
 
 const RegistrationPage = (props) => {
 
@@ -26,7 +34,61 @@ const RegistrationPage = (props) => {
     const [filteredLgas, setFilteredLgas] = useState([]);
     const [filteredResidenceLgas, setFilteredResidenceLgas] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
-  
+    const [openSnack, setOpenSnack] = React.useState(false);  
+    const [message, setMessage] = React.useState('');
+    const [token, setToken] = React.useState(null);
+    const [fetching, setFetching] = React.useState(false);
+    const navigate = useNavigate();
+
+    React.useEffect(() => {
+        const storedData = JSON.parse(localStorage.getItem('data'));
+        setToken(storedData?.token);
+
+        if (storedData?.token) {
+            setFetching(true);
+            axios.get(`${API_URL}/census/record/`, {
+              headers: { Authorization: `Bearer ${storedData.token}` }
+            })
+            .then(response => {
+              setFormData(response.data?.detail);
+              if (response.data?.detail?.state_of_origin){
+                setFilteredLgas(nigeriaLgas[response.data?.detail?.state_of_origin]);
+              }
+              if (response.data?.detail?.state_of_residence){
+                setFilteredResidenceLgas(nigeriaLgas[response.data?.detail?.state_of_residence]);
+              }
+              setFetching(false);
+            })
+            .catch(error => {
+              console.error(error);
+              setFetching(false);
+            });
+          }
+    }, []);
+
+    const registerCensus = async (payload) => {
+        const { data } = await axios.post(`${API_URL}/census/record/`, payload, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+          return data;
+    }
+
+    const moveToLandingPage = () => {
+        navigate('/')
+        window.scrollTo(0, 0);
+    }
+
+    const { mutate, isLoading } = useMutation(registerCensus, {
+        onSuccess: (data) => {
+          setModalOpen(true);
+          // add any other necessary data to state here
+        },
+        onError: (error) => {
+          setMessage(error?.response?.data?.detail || 'Oops! Something went wrong');
+          setOpenSnack(true);
+        }
+      });
+
 
     const handleChange = (e) => {   
         
@@ -48,14 +110,52 @@ const RegistrationPage = (props) => {
         }
     }
 
-    console.log('ff: ', formData);
+    const handleCloseSnack = () => {
+        setOpenSnack(false);
+        setMessage('');
+      }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (
+            (!formData?.date_of_birth || !formData?.first_name || !formData?.last_name
+             || !formData?.house_address || !formData?.middle_name || !formData?.level_of_education
+             || !formData?.marital_status || !formData?.occupation || !formData?.phone_number
+             || !formData?.place_of_work || !formData?.residential_building || !formData?.state_of_origin
+             || !formData?.state_of_residence || !formData?.type_of_family
+                )
+            ){
+                setOpenSnack(true);
+                setMessage('Please fill all required fields!!!')
+                return;
+        }
+        
+        mutate(formData);
+    }
+
+    console.log('formData -> ', formData);
+
+    if ( fetching ){
+
+        return (
+            <>
+                <p>Loading...</p>
+            </>
+        )
+    }
 
     return (
         <Box sx={{ paddingX: '10%' }}>
             <FeedbackModal
                 open={modalOpen}
+                moveToLandingPage={moveToLandingPage}
                 handleClose={() => setModalOpen(false)}
             />
+            <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} open={openSnack} autoHideDuration={6000} onClose={handleCloseSnack}>
+                <Alert onClose={handleCloseSnack} severity="warning" sx={{ width: '100%' }}>
+                    {message || ''}
+                </Alert>
+            </Snackbar>
             <Box
                 display="flex" 
             >
@@ -153,7 +253,7 @@ const RegistrationPage = (props) => {
                                 >
                                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1}>
                                 <FormControlLabel
-                                value="single"
+                                value="Single"
                                 control={<Radio />}
                                 label="Single"
                                 sx={{ 
@@ -170,19 +270,19 @@ const RegistrationPage = (props) => {
                                 }}
                                 />
                                 <FormControlLabel
-                                value="married"
+                                value="Married"
                                 control={<Radio />}
                                 label="Married"
                                 sx={{ flexGrow: 1, textAlign: 'center' }}
                                 />
                                 <FormControlLabel
-                                value="divorced"
+                                value="Divorced"
                                 control={<Radio />}
                                 label="Divorced"
                                 sx={{ flexGrow: 1, textAlign: 'center' }}
                                 />
                                 <FormControlLabel
-                                value="widowed"
+                                value="Widowed"
                                 control={<Radio />}
                                 label="Widowed"
                                 sx={{ flexGrow: 1, textAlign: 'center' }}
@@ -294,6 +394,7 @@ const RegistrationPage = (props) => {
                             id="lga-select"
                             IconComponent={ExpandCircleDownOutlinedIcon}
                             name="lga_of_residence"
+                            onChange={handleChange}
                             value={formData?.lga_of_residence}
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -316,7 +417,7 @@ const RegistrationPage = (props) => {
                     </Typography>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={4}>
-                            <InputLabel htmlFor="state-select" sx={{ float: 'left', color: '#000' }}>LGA of Origin</InputLabel>
+                            <InputLabel htmlFor="state-select" sx={{ float: 'left', color: '#000' }}>State of Origin</InputLabel>
                             <Select
                             labelId="state-select-label"
                             id="state-select"
@@ -333,12 +434,13 @@ const RegistrationPage = (props) => {
                             </Select>
                         </Grid>
                         <Grid item xs={12} sm={4}>
-                            <InputLabel htmlFor="lga-select" sx={{ float: 'left', color: '#000' }}>State of Origin</InputLabel>
+                            <InputLabel htmlFor="lga-select" sx={{ float: 'left', color: '#000' }}>LGA of Origin</InputLabel>
                             <Select
                             labelId="lga-select-label"
                             id="lga-select"
                             value={formData?.lga_of_origin}
                             name="lga_of_origin"
+                            onChange={handleChange}
                             IconComponent={ExpandCircleDownOutlinedIcon}
                             sx={{ width: '100%', float: 'left', textAlign: 'left' }}
                             >
@@ -447,12 +549,19 @@ const RegistrationPage = (props) => {
                 sx={{ m : 2 }}
             >
                 <Box m="auto">
-                    <Button sx={{ 
-                        backgroundColor: primaryColor,
-                        width: 300,
-                        textTransform: 'none',
-                        padding: 1
-                        }} variant="contained">Save</Button>
+                    <LoadingButton
+                        sx={{ 
+                            backgroundColor: primaryColor,
+                            width: 300,
+                            textTransform: 'none',
+                            padding: 1
+                        }} 
+                        variant="contained"
+                        loading={isLoading}
+                        onClick={handleSubmit}
+                        >
+                            Save
+                        </LoadingButton>
                 </Box>
             </Box>
         </Box>

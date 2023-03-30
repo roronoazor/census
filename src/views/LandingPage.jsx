@@ -5,6 +5,7 @@ import DualCard2 from "../components/DualCard2";
 
 const LandingPage = (props) => {
 
+    
     const [data, setData] = React.useState(null);
 
     React.useEffect(() => {

@@ -3,7 +3,7 @@ import { Modal, Backdrop, Box, Button, Typography } from '@mui/material';
 import Image from '../assets/Vector.png';
 import { primaryColor } from '../config/constants';
 
-const MyModal = ({ open, handleClose, title, description }) => {
+const MyModal = ({ open, handleClose, moveToLandingPage }) => {
   const [editDetails, setEditDetails] = useState(false);
 
   const handleEditClick = () => {
@@ -50,7 +50,7 @@ const MyModal = ({ open, handleClose, title, description }) => {
             display="flex"
             sx={{ m : 2 }}
         >  
-          <Button variant="outlined" onClick={handleEditClick} sx={{ 
+          <Button variant="outlined" onClick={handleClose} sx={{ 
             m: 'auto',
             width: '300px',
             color: primaryColor,
@@ -66,7 +66,10 @@ const MyModal = ({ open, handleClose, title, description }) => {
                 m : 2
             }}
         >  
-          <Button variant="contained" onClick={handleEditClick} sx={{ 
+          <Button 
+          onClick={moveToLandingPage}
+          variant="contained"
+          sx={{ 
             m: 'auto',
             width: '300px',
             backgroundColor: primaryColor
